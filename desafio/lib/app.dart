@@ -5,7 +5,6 @@ import 'package:desafio/splash.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -19,11 +18,13 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        Constants.routeMap: (context) => MapScreen(),
+        Constants.routeMap: (context) => MapScreen(
+              key: const Key(Constants.keyMapScreen),
+            ),
         Constants.routeLogin: (context) => LoginScreen(),
         Constants.routeSplash: (context) => SplashScreen(),
       },
-      initialRoute: "/splash",
+      initialRoute: Constants.routeSplash,
     );
   }
 }

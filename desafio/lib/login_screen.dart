@@ -23,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
   final emailField = TextField(
+    key: const Key(Constants.keyLogin),
     controller: TextEditingController(),
     //style: style,
     decoration: InputDecoration(
@@ -31,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
   );
   final passwordField = TextField(
+    key: const Key(Constants.keyPassword),
     controller: TextEditingController(),
     obscureText: true,
     //style: style,
@@ -43,6 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final loginButon = Material(
+      key: const Key(Constants.keyLoginButton),
       elevation: 5.0,
       borderRadius: BorderRadius.circular(30.0),
       color: const Color(0xFF002934),
