@@ -1,5 +1,7 @@
+import 'package:desafio/model/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:desafio/common/constants.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -9,27 +11,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final auth = AuthService();
   @override
   void initState() {
-    checkLogin();
     super.initState();
   }
 
-  void checkLogin() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        print('User is currently signed out!');
-      } else {
-        print('User is signed in!');
-      }
-    });
-    FirebaseAuth.instance.idTokenChanges().listen((User? user) {
-      if (user == null) {
-        print('User is currently signed out!');
-      } else {
-        print('User is signed in!');
-      }
-    });
+  void goToMap() {
+    Navigator.pushNamed(context, Constants.routeMap);
   }
 
   TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
@@ -51,38 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
   );
 
-  Future<void> signIn(String email, String password) async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      final token = await userCredential.user!.getIdToken();
-      print("token $token");
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
-    }
-  }
-
-  Future<void> register() async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: "barry.allen@example.com",
-              password: "SuperSecretPassword!");
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final loginButon = Material(
@@ -96,7 +53,13 @@ class _LoginScreenState extends State<LoginScreen> {
           final email = emailField.controller?.text.trim() ?? "none";
           final password = passwordField.controller?.text.trim() ?? "none";
           print("Will signin with $email, $password");
-          signIn(email, password);
+          auth.signIn(email, password).then((success) {
+            if (success) {
+              goToMap();
+            } else {
+              print("Show message");
+            }
+          });
         },
         child: Text("Login",
             textAlign: TextAlign.center,
@@ -105,22 +68,24 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
 
-    return SafeArea(
-      child: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("LoginScreen"),
-                const SizedBox(height: 100),
-                emailField,
-                const SizedBox(height: 10),
-                passwordField,
-                const SizedBox(height: 50),
-                loginButon
-              ],
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("LoginScreen"),
+                  const SizedBox(height: 100),
+                  emailField,
+                  const SizedBox(height: 10),
+                  passwordField,
+                  const SizedBox(height: 50),
+                  loginButon
+                ],
+              ),
             ),
           ),
         ),

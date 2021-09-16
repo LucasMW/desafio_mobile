@@ -1,4 +1,8 @@
+import 'package:desafio/common/constants.dart';
 import 'package:desafio/login_screen.dart';
+import 'package:desafio/map.dart';
+import 'package:desafio/splash.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,35 +15,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        body: FutureBuilder(
-            future: _initialization,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return SafeArea(
-                  child: Container(
-                    color: Colors.red,
-                    child: Text(snapshot.error.toString()),
-                  ),
-                );
-              }
-              if (snapshot.connectionState == ConnectionState.done) {
-                var materialApp = MaterialApp(
-                  title: 'Desafio',
-                  theme: ThemeData(
-                    primarySwatch: Colors.indigo,
-                  ),
-                  home: LoginScreen(),
-                );
-                return materialApp;
-              }
-              return const CircularProgressIndicator();
-            }),
-      ),
+      routes: {
+        Constants.routeMap: (context) => MapScreen(),
+        Constants.routeLogin: (context) => LoginScreen(),
+        Constants.routeSplash: (context) => SplashScreen(),
+      },
+      initialRoute: "/splash",
     );
   }
 }
