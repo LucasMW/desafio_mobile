@@ -1,3 +1,4 @@
+import 'package:desafio/model/analytics.dart';
 import 'package:desafio/model/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: ListBody(
               children: <Widget>[
                 Text(message ?? "User couldn't login"),
-                Text('Are Email and Password correct?'),
+                const Text('Are Email and Password correct?'),
               ],
             ),
           ),
@@ -87,6 +88,9 @@ class _LoginScreenState extends State<LoginScreen> {
           print("Will signin with $email, $password");
           auth.signIn(email, password).then((success) {
             if (success) {
+              AnalyticsService().sendAnalyticsEvent("Login", parameters: {
+                "email": email,
+              });
               goToMap();
             } else {
               _showMyDialog("Couldn't Login", message: auth.errorMessage);

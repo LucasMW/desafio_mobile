@@ -14,6 +14,7 @@ environment:
 dependencies:
   firebase_auth: 
   firebase_crashlytics:
+  firebase_analytics:
   cloud_firestore: 
   firebase_core: 
   flutter_map: any
