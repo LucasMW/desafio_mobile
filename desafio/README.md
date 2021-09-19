@@ -5,8 +5,12 @@
     Engine • revision f0826da7ef
     Tools • Dart 2.14.0
 
-    Tested for Android Only.
+Tested for Android Only.
 
-    Try: exemplo@exemplo.com on login
+Try: exemplo@exemplo.com on login
+
+## Run tests with:
+
+    flutter driver --target=test_driver/app.dart
 
 

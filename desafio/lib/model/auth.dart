@@ -1,8 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
+  String? errorMessage;
+  String? token;
   void logout() {
     FirebaseAuth.instance.signOut();
+  }
+
+  Future<String>? getToken() {
+    return FirebaseAuth.instance.currentUser?.getIdToken();
   }
 
   bool isSignedIn() {
@@ -13,14 +19,13 @@ class AuthService {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      final token = await userCredential.user!.getIdToken();
-      print("token $token");
+      token = await userCredential.user!.getIdToken();
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        errorMessage = 'No user found for that email.';
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        errorMessage = 'Wrong password provided for that user.';
       }
     }
     return false;

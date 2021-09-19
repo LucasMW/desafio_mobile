@@ -1,3 +1,6 @@
+import 'package:desafio/model/auth.dart';
+import 'package:desafio/model/store.dart';
+import 'package:desafio/model/user_position.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -5,7 +8,7 @@ import 'package:location/location.dart';
 import 'package:flutter_map_location/flutter_map_location.dart';
 
 class MapScreen extends StatefulWidget {
-  MapScreen({Key? key}) : super(key: key);
+  const MapScreen({Key? key}) : super(key: key);
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -17,6 +20,9 @@ class _MapScreenState extends State<MapScreen> {
   late bool _serviceEnabled;
   FlutterMap? daMap;
   MapController? mapController = MapController();
+  final StoreService store = StoreService();
+
+  String? userId;
 
   Future<void> requestPermission() async {
     PermissionStatus _permissionGranted;
@@ -49,6 +55,14 @@ class _MapScreenState extends State<MapScreen> {
       final coords = LatLng(lat, long);
       print("update $coords");
       mapController?.move(_currentPosition ?? coords, mapController!.zoom);
+      userId = AuthService().token;
+      //AuthService().getToken()!.then((value) => userId = value);
+      final map = {
+        "position": "($lat, $long)",
+        "timestamp": DateTime.now().toIso8601String(),
+        "userId": userId
+      };
+      store.insert(map); // insert at the store
       setState(() {
         _currentPosition = coords;
       });
@@ -58,6 +72,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     requestPermission().then((value) => startLocationTacking());
+
     super.initState();
   }
 
@@ -111,14 +126,6 @@ class _MapScreenState extends State<MapScreen> {
           ],
         ),
       ],
-      // nonRotatedLayers: <LayerOptions>[
-      //   // USAGE NOTE 3: Add the options for the plugin
-      //   locationOptions,
-      // ],
-    );
-
-    return Scaffold(
-      body: daMap,
     );
   }
 

@@ -12,6 +12,35 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final auth = AuthService();
+
+  Future<void> _showMyDialog(String title, {String? message}) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message ?? "User couldn't login"),
+                Text('Are Email and Password correct?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -27,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
     controller: TextEditingController(),
     //style: style,
     decoration: InputDecoration(
-        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         hintText: "Email",
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
   );
@@ -51,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
       color: const Color(0xFF002934),
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
           final email = emailField.controller?.text.trim() ?? "none";
           final password = passwordField.controller?.text.trim() ?? "none";
@@ -60,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
             if (success) {
               goToMap();
             } else {
-              print("Show message");
+              _showMyDialog("Couldn't Login", message: auth.errorMessage);
             }
           });
         },
