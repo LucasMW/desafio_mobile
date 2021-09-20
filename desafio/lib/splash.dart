@@ -1,5 +1,6 @@
 import 'package:desafio/login_screen.dart';
 import 'package:desafio/model/auth.dart';
+import 'package:desafio/model/crashlytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,10 @@ class _SplashScreenState extends State<SplashScreen> {
             }
             if (snapshot.connectionState == ConnectionState.done) {
               final auth = AuthService();
+              final crash = CrashlyticsService();
+              crash.initCrashlytics();
+              crash.logErrorMessage("Testing if this works");
+              //crash.forceCrash();
               //auth.logout();
               SchedulerBinding.instance!.addPostFrameCallback((_) {
                 if (auth.isSignedIn()) {
